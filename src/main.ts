@@ -1,6 +1,10 @@
 import { createApp } from 'vue'
-import './style.css'
 import App from './App.vue'
+
+// Styles
+import './assets/styles/variables.sass'
+import './assets/styles/helpers.sass'
+import './assets/styles/global.sass'
 
 // Vuetify
 import 'vuetify/styles'
