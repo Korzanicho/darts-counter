@@ -1,7 +1,7 @@
 <template>
   <v-container class="PlayerList">
     <v-row>
-      <v-col v-for="(player, index) in allPlayers" :key="index" cols="12">
+      <v-col v-for="(player, index) in getPlayers" :key="index" cols="12">
 				<div class="PlayerList__wrapper pa-5 rounded-lg">
 					<h2 class="PlayerList__name" :style="{ '--color-player': player.color }">{{ player.name }}</h2>
 					<button class="PlayerList__remove-btn" @click="removePlayer(player.id)">X</button>
@@ -16,10 +16,10 @@ import { usePlayers } from '../composables/usePlayers'
 
 export default {
   setup() {
-    const { allPlayers, removePlayer } = usePlayers()
+    const { getPlayers, removePlayer } = usePlayers()
 
     return {
-      allPlayers,
+      getPlayers,
       removePlayer,
       dialog: false
     }
