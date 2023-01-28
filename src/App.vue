@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import DartTable from './components/DartTable.vue'
-import PlayerList from './components/PlayerList.vue'
+import DartTable from '@/components/DartTable.vue'
+import PlayerList from '@/components/PlayerList.vue'
 import NewPlayerForm from '@/components/NewPlayerForm.vue'
-import TheLeaderboard from './components/TheLeaderboard.vue'
+import TheLeaderboard from '@/components/TheLeaderboard.vue'
 
 import { usePlayers } from './composables/usePlayers'
 import { useGame } from './composables/useGame'
