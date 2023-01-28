@@ -40,7 +40,7 @@ const addNewPlayer = () => {
 		id: Date.now(),
 		name: playerName.value,
 		color: colorOptions.shift() || '#FFABCD',
-		points: 501,
+		score: 501,
 	}
 	addPlayer(player)
 	playerName.value = ''

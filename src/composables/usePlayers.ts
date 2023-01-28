@@ -8,9 +8,7 @@ const players = reactive({
 export const usePlayers = () => {
   
   const addPlayer = (player: Player) => {
-    console.log('addPlayer', player);
     players.value.push(player);
-    console.log('players.value', players.value);
   };
 
   const removePlayer = (id: number) => {
@@ -22,13 +20,13 @@ export const usePlayers = () => {
     players.value.splice(playerIndex, 1, player);
   };
 
-  const allPlayers = computed(() => players.value);
+  const getPlayers = computed(() => players.value);
   
   return {
     players,
     addPlayer,
     removePlayer,
     editPlayer,
-    allPlayers,
+    getPlayers,
   }
 }
