@@ -14,10 +14,10 @@
     "noEmit": true,
     "paths": {
 			"@/*": [
-				"src/*"
+				"./src/*"
 			],
 			"@Components/*": [
-				"modules/static/shared/components/*"
+				"./modules/static/shared/components/*"
 			]
 		}
   },
