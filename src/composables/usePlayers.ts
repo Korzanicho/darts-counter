@@ -12,6 +12,11 @@ export const usePlayers = () => {
     if (players.value[playerIndex].score - points < 0) return;
     players.value[playerIndex].score -= points;
   };
+
+  const setScore = (id: number, score: number) => {
+    const playerIndex = players.value.findIndex(player => player.id === id);
+    players.value[playerIndex].score = score;
+  };
   
   const addPlayer = (player: Player) => {
     players.value.push(player);
@@ -35,6 +40,7 @@ export const usePlayers = () => {
   return {
     players,
     getPlayers,
+    setScore,
     addPlayer,
     editPlayer,
     removePlayer,
