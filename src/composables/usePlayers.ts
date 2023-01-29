@@ -6,6 +6,12 @@ const players = reactive({
 });
 
 export const usePlayers = () => {
+
+  const addPlayerPoints = (id: number, points: number) => {
+    const playerIndex = players.value.findIndex(player => player.id === id);
+    if (players.value[playerIndex].score - points < 0) return;
+    players.value[playerIndex].score -= points;
+  };
   
   const addPlayer = (player: Player) => {
     players.value.push(player);
@@ -33,5 +39,6 @@ export const usePlayers = () => {
     editPlayer,
     removePlayer,
     getPlayerById,
+    addPlayerPoints
   }
 }
