@@ -20,13 +20,18 @@ export const usePlayers = () => {
     players.value.splice(playerIndex, 1, player);
   };
 
+  const getPlayerById = (id: number) => {
+    return players.value.find(player => player.id === id);
+  };
+
   const getPlayers = computed(() => players.value);
   
   return {
     players,
-    addPlayer,
-    removePlayer,
-    editPlayer,
     getPlayers,
+    addPlayer,
+    editPlayer,
+    removePlayer,
+    getPlayerById,
   }
 }
