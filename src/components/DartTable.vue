@@ -1,10 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { watch, ref } from 'vue'
+import { useGame } from '../composables/useGame'
+import { usePlayers } from '../composables/usePlayers'
 
 let lastColor = ''
+const points = ref(0)
+const { getDarts, setDarts, changePlayerToNext, getCurrentPlayerId } = useGame()
+const { addPlayerPoints } = usePlayers()
 
 const addPoints = (e: Event) => {
-	console.log(e.target)
+	if (getDarts.value < 1) return;
+	setDarts(getDarts.value - 1)
+	points.value += parseInt(e.target.getAttribute('data-value'))
+	addPlayerPoints(getCurrentPlayerId.value, e.target.getAttribute('data-value'))
+}
+
+const resolveFault = () => {
+	if (getDarts.value < 1) return;
+	setDarts(getDarts.value - 1)
+	addPlayerPoints(getCurrentPlayerId.value, 0)
 }
 
 const changeColor = (e: Event) => {
@@ -14,6 +28,12 @@ const changeColor = (e: Event) => {
 		lastColor = element.getAttribute('fill') || ''
 		element.setAttribute('fill', 'blue')
 	}
+}
+
+const changePlayer = () => {
+	points.value = 0
+	setDarts(3)
+	changePlayerToNext()
 }
 
 const restoreColor = (e: Event) => {
@@ -28,6 +48,7 @@ const restoreColor = (e: Event) => {
 
 <template>
 	<div class="dart-table">
+		<div class="dart-table__points">Current points: {{ points }}</div>
 		<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="-250 -250 500 500" version="1.0">
 			<defs id="defs6">
 				<line id="refwire" y2="167.4" y1="16.2" stroke="#c0c0c0" x2="26.52" x1="2.566"/>
@@ -218,6 +239,10 @@ const restoreColor = (e: Event) => {
 				<path id="text315" d="m195.39 42.165l1.65-5.076-17.52-5.692-0.68 5.881-2.83-0.919 0.67-5.851 1.01-3.107 20.35 6.612 1.65-5.076 2.62 0.85-4.3 13.227-2.62-0.849m-9.82-32.049c-0.52 1.6-0.12 3.061 1.19 4.384 1.31 1.31 3.55 2.478 6.71 3.504 3.14 1.023 5.64 1.391 7.48 1.104 1.83-0.3 3-1.25 3.52-2.85 0.53-1.61 0.13-3.069-1.18-4.379-1.31-1.323-3.54-2.4961-6.69-3.519-3.16-1.0261-5.65-1.3891-7.49-1.0888-1.84 0.2868-3.02 1.2351-3.54 2.8448m-2.46-0.7995c0.84-2.5737 2.49-4.2058 4.97-4.8964 2.48-0.704 5.65-0.4264 9.53 0.833 3.86 1.2561 6.6 2.8975 8.19 4.9239 1.59 2.014 1.97 4.307 1.13 6.881-0.83 2.573-2.49 4.212-4.96 4.916-2.48 0.691-5.65 0.408-9.52-0.848-3.87-1.259-6.61-2.895-8.2-4.909-1.6-2.026-1.98-4.327-1.14-6.9005"/>
 			</g>
 		</svg>
+		<div class="dart-table__buttons-wrapper d-flex justify-space-between my-4">
+			<v-btn class="dart-table__button" @click="resolveFault">FAULT</v-btn>
+			<v-btn class="dart-table__button" @click="changePlayer">NEXT PLAYER</v-btn>
+		</div>
 	</div>
 </template>
 
@@ -225,4 +250,9 @@ const restoreColor = (e: Event) => {
 	.dart-table
 		min-width: 300px
 		min-height: 300px
+		max-width: 500px
+		margin: 0 auto
+
+		&__button
+			flex-basis: 35%
 </style>

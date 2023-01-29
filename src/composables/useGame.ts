@@ -1,5 +1,6 @@
 import { Ref, computed, ref } from 'vue'
 import type { Player } from '../interfaces'
+import { usePlayers } from './usePlayers'
 
 const states = [
 	'before',
@@ -19,7 +20,6 @@ export const useGame = () => {
   };
 
   const setCurrentPlayerId = (id: number) => {
-    console.log('setCurrentPlayerId', id);
     currentPlayerId.value = id;
   };
 
@@ -29,6 +29,18 @@ export const useGame = () => {
 
   const setDarts = (newDarts: number) => {
     darts.value = newDarts;
+  };
+
+  const changePlayerToNext = () => {
+    const players = usePlayers().getPlayers.value;
+    const currentPlayerIndex = players.findIndex(player => player.id === currentPlayerId.value);
+    const nextPlayerIndex = currentPlayerIndex + 1;
+    if (nextPlayerIndex >= players.length) {
+      setCurrentPlayerId(players[0].id);
+      setCurrentTurn(currentTurn.value++);
+    } else {
+      setCurrentPlayerId(players[nextPlayerIndex].id);
+    }
   };
 
   const getState = computed(() => state.value);
@@ -45,5 +57,6 @@ export const useGame = () => {
     setDarts,
     setCurrentTurn,
     setCurrentPlayerId,
+    changePlayerToNext,
   }
 }

@@ -35,7 +35,7 @@ const startGame = () => {
   
     <div class="game" v-else>
       <TurnInfo />
-      <!-- <DartTable /> -->
+      <DartTable />
       <TheLeaderboard />
     </div>
   </div>

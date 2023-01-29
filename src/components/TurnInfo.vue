@@ -28,5 +28,6 @@ const { getPlayerById } = usePlayers();
 		right: 35px
 		top: 0
 	&__dart
+		width: 1rem
 		margin-right: 0.5rem
 </style>
