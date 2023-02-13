@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <v-container class="new-player-form">
     <v-form ref="form" @submit.prevent="addNewPlayer">
-      <v-row>
+      <v-row class="justify-center">
         <v-col cols="12" sm="6" md="4">
           <v-text-field
             label="Nazwa gracza"
@@ -10,7 +10,7 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" sm="6" md="4">
-          <v-btn type="submit" color="primary">Dodaj gracza</v-btn>
+          <v-btn class="mx-auto" type="submit" color="primary" size="large">Dodaj gracza</v-btn>
         </v-col>
       </v-row>
     </v-form>
