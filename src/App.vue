@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import EndGame from './components/EndGame.vue'
 import TurnInfo from '@/components/TurnInfo.vue'
 import DartTable from '@/components/DartTable.vue'
 import PlayerList from '@/components/PlayerList.vue'
@@ -25,7 +26,9 @@ const startGame = () => {
       <NewPlayerForm />
       <PlayerList />
       <v-btn
+        class="mx-auto d-block"
         color="primary"
+        size="x-large"
         :disabled="getPlayers.length < 1"
         @click="startGame"
       >
@@ -33,10 +36,20 @@ const startGame = () => {
       </v-btn>
     </div>
   
-    <div class="game" v-else>
+    <div class="game" v-if="getState === 'playing'">
       <TurnInfo />
-      <DartTable />
-      <TheLeaderboard />
+      <v-row class="pa-3">
+        <v-col cols="12" md="6">
+          <DartTable />
+        </v-col>
+        <v-col cols="12" md="6">
+          <TheLeaderboard />
+        </v-col>
+      </v-row>
+    </div>
+
+    <div class="after-game" v-if="getState === 'after'">
+      <EndGame />
     </div>
   </div>
 </template>

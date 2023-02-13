@@ -1,4 +1,5 @@
 import { Ref, computed, reactive } from 'vue'
+import { useGame } from './useGame'
 import type { Player } from '../interfaces'
 
 const players = reactive({
@@ -11,6 +12,12 @@ export const usePlayers = () => {
     const playerIndex = players.value.findIndex(player => player.id === id);
     if (players.value[playerIndex].score - points < 0) return;
     players.value[playerIndex].score -= points;
+
+    if (players.value[playerIndex].score === 0) {
+      useGame().setState('after');
+      useGame().setCurrentWinnerName(players.value[playerIndex].name);
+      useGame().addWinner(players.value[playerIndex]);
+    }
   };
 
   const setScore = (id: number, score: number) => {
@@ -36,6 +43,16 @@ export const usePlayers = () => {
   };
 
   const getPlayers = computed(() => players.value);
+
+  const removePlayers = () => {
+    players.value = [];
+  };
+
+  const resetScores = () => {
+    players.value.forEach(player => {
+      player.score = 501;
+    });
+  };
   
   return {
     players,
@@ -43,7 +60,9 @@ export const usePlayers = () => {
     setScore,
     addPlayer,
     editPlayer,
+    resetScores,
     removePlayer,
+    removePlayers,
     getPlayerById,
     addPlayerPoints
   }
