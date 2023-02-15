@@ -1,5 +1,6 @@
 import { Ref, computed, reactive } from 'vue'
 import { useGame } from './useGame'
+import { useLocalstorage } from './useLocalstorage';
 import type { Player } from '../interfaces'
 
 const players = reactive({
@@ -18,24 +19,38 @@ export const usePlayers = () => {
       useGame().setCurrentWinnerName(players.value[playerIndex].name);
       useGame().addWinner(players.value[playerIndex]);
     }
+
+    useLocalstorage().savePlayers(players.value);
   };
 
   const setScore = (id: number, score: number) => {
     const playerIndex = players.value.findIndex(player => player.id === id);
     players.value[playerIndex].score = score;
+
+    useLocalstorage().savePlayers(players.value); 
   };
   
   const addPlayer = (player: Player) => {
     players.value.push(player);
+
+    useLocalstorage().savePlayers(players.value);
+  };
+
+  const setPlayers = (newPlayers: Player[]) => {
+    players.value = newPlayers;
   };
 
   const removePlayer = (id: number) => {
     players.value = players.value.filter(player => player.id !== id);
+
+    useLocalstorage().savePlayers(players.value);
   };
 
   const editPlayer = (player: Player) => {
     const playerIndex = players.value.findIndex(p => p.id === player.id);
     players.value.splice(playerIndex, 1, player);
+
+    useLocalstorage().savePlayers(players.value);
   };
 
   const getPlayerById = (id: number) => {
@@ -46,12 +61,14 @@ export const usePlayers = () => {
 
   const removePlayers = () => {
     players.value = [];
+    useLocalstorage().savePlayers(players.value);
   };
 
   const resetScores = () => {
     players.value.forEach(player => {
       player.score = 501;
     });
+    useLocalstorage().savePlayers(players.value);
   };
   
   return {
@@ -59,6 +76,7 @@ export const usePlayers = () => {
     getPlayers,
     setScore,
     addPlayer,
+    setPlayers,
     editPlayer,
     resetScores,
     removePlayer,

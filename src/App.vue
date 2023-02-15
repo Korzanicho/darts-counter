@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import EndGame from './components/EndGame.vue'
 import TurnInfo from '@/components/TurnInfo.vue'
 import DartTable from '@/components/DartTable.vue'
@@ -6,8 +7,9 @@ import PlayerList from '@/components/PlayerList.vue'
 import NewPlayerForm from '@/components/NewPlayerForm.vue'
 import TheLeaderboard from '@/components/TheLeaderboard.vue'
 
-import { usePlayers } from './composables/usePlayers'
 import { useGame } from './composables/useGame'
+import { usePlayers } from './composables/usePlayers'
+import { useLocalstorage } from './composables/useLocalstorage'
 
 const { getPlayers } = usePlayers();
 const { getState, setState, setCurrentPlayerId, setCurrentTurn } = useGame();
@@ -18,6 +20,26 @@ const startGame = () => {
   setCurrentPlayerId(getPlayers.value[0].id);
 }
 
+const restoreData = () => {
+  const state = useLocalstorage().getState();
+  const players = useLocalstorage().getPlayers();
+  const currentTurn = useLocalstorage().getCurrentTurn();
+  const currentPlayerId = useLocalstorage().getCurrentPlayerId();
+
+  if (!players) return;
+
+  usePlayers().setPlayers(players);
+
+  if (state && currentPlayerId) {
+    setState(state);
+    setCurrentTurn(currentTurn);
+    setCurrentPlayerId(currentPlayerId);
+  }
+}
+
+onMounted(() => {
+  restoreData();
+})
 </script>
 
 <template>

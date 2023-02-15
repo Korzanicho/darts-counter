@@ -24,7 +24,7 @@ import { usePlayers } from '../composables/usePlayers'
 import type { Player } from '../interfaces'
 import type { Ref } from 'vue';
 
-const { addPlayer } = usePlayers()
+const { addPlayer, getPlayers } = usePlayers()
 
 const colorOptions = [
 	'#FFABCD', '#00FF00', '#0000FF',
@@ -36,10 +36,11 @@ const colorOptions = [
 const playerName: Ref<string> = ref('')
 
 const addNewPlayer = () => {
+  const colors = colorOptions.filter((color) => !(getPlayers.value.some((player: Player) => player.color == color)))
 	const player: Player = {
 		id: Date.now(),
 		name: playerName.value,
-		color: colorOptions.shift() || '#FFABCD',
+		color: colors.shift() || '#FFABCD',
 		score: 501,
 	}
 	addPlayer(player)
