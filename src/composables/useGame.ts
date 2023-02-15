@@ -1,6 +1,9 @@
 import { Ref, computed, ref } from 'vue'
 import type { Player } from '../interfaces'
 import { usePlayers } from './usePlayers'
+import { useLocalstorage } from './useLocalstorage';
+
+const localStorage = useLocalstorage();
 
 const states = [
 	'before',
@@ -19,18 +22,27 @@ export const useGame = () => {
 
   const addWinner = (player: Player) => {
     winners.value.push(player);
+    localStorage.saveWinners(winners.value);
   }
   
+  const setWinners = (newWinners: Player[]) => {
+    winners.value = newWinners;
+    localStorage.saveWinners(newWinners);
+  };
+
   const setState = (newState: string) => {
     state.value = newState;
+    localStorage.saveState(newState);
   };
 
   const setCurrentPlayerId = (id: number) => {
     currentPlayerId.value = id;
+    localStorage.saveCurrentPlayerId(id);
   };
 
   const setCurrentTurn = (newTurn: number) => {
     currentTurn.value = newTurn;
+    localStorage.saveCurrentTurn(newTurn);
   };
 
   const setDarts = (newDarts: number) => {
@@ -49,19 +61,19 @@ export const useGame = () => {
     const nextPlayerIndex = currentPlayerIndex + 1;
     if (nextPlayerIndex >= players.length) {
       setCurrentPlayerId(players[0].id);
-      setCurrentTurn(currentTurn.value++);
+      setCurrentTurn(getCurrentTurn.value + 1);
     } else {
       setCurrentPlayerId(players[nextPlayerIndex].id);
     }
   };
 
   const resetGame = () => {
-    state.value = states[0];
-    currentPlayerId.value = 0;
-    currentTurn.value = 0;
-    darts.value = 3;
-    currentWinnerName.value = '';
-    winners.value = [];
+    setState(states[0]);
+    setCurrentPlayerId(0);
+    setCurrentTurn(0);
+    setDarts(3);
+    setCurrentWinnerName('');
+    setWinners([]);
     usePlayers().resetScores();
   };
 
