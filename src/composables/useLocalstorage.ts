@@ -1,12 +1,12 @@
-import type { Player } from '../interfaces'
+import type { Player, UseLocaLstorage } from '../interfaces'
 
-export const useLocalstorage = () => {
+export const useLocalstorage: Function = (): UseLocaLstorage => {
 
-	const savePlayers = (players: Player[]) => {
+	const savePlayers = (players: Player[]): void => {
 		localStorage.setItem('players', JSON.stringify(players));
 	};
 
-	const getPlayers = () => {
+	const getPlayers = (): Player[] => {
 		const players = localStorage.getItem('players');
 		if (players) {
 			return JSON.parse(players);
@@ -14,11 +14,11 @@ export const useLocalstorage = () => {
 		return [];
 	};
 
-	const saveWinners = (winners: Player[]) => {
+	const saveWinners = (winners: Player[]): void => {
 		localStorage.setItem('winners', JSON.stringify(winners));
 	};
 
-	const getWinners = () => {
+	const getWinners = (): Player[] => {
 		const winners = localStorage.getItem('winners');
 		if (winners) {
 			return JSON.parse(winners);
@@ -26,11 +26,11 @@ export const useLocalstorage = () => {
 		return [];
 	};
 
-	const saveState = (state: string) => {
+	const saveState = (state: string): void => {
 		localStorage.setItem('state', state);
 	};
 
-	const getState = () => {
+	const getState = (): string => {
 		const state = localStorage.getItem('state');
 		if (state) {
 			return state;
@@ -38,11 +38,11 @@ export const useLocalstorage = () => {
 		return 'before';
 	};
 
-	const saveCurrentPlayerId = (id: number) => {
+	const saveCurrentPlayerId = (id: number): void => {
 		localStorage.setItem('currentPlayerId', id.toString());
 	};
 
-	const getCurrentPlayerId = () => {
+	const getCurrentPlayerId = (): number => {
 		const id = localStorage.getItem('currentPlayerId');
 		if (id) {
 			return parseInt(id);
@@ -50,11 +50,11 @@ export const useLocalstorage = () => {
 		return 0;
 	};
 
-	const saveCurrentTurn = (turn: number) => {
+	const saveCurrentTurn = (turn: number): void => {
 		localStorage.setItem('currentTurn', turn.toString());
 	};
 
-	const getCurrentTurn = () => {
+	const getCurrentTurn = (): number => {
 		const turn = localStorage.getItem('currentTurn');
 		if (turn) {
 			return parseInt(turn);
@@ -62,11 +62,11 @@ export const useLocalstorage = () => {
 		return 0;
 	};
 
-	const saveCurrentWinnerName = (name: string) => {
+	const saveCurrentWinnerName = (name: string): void => {
 		localStorage.setItem('currentWinnerName', name);
 	};
 
-	const getCurrentWinnerName = () => {
+	const getCurrentWinnerName = (): string => {
 		const name = localStorage.getItem('currentWinnerName');
 		if (name) {
 			return name;

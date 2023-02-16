@@ -9,7 +9,7 @@ const { getPlayerById } = usePlayers();
 <template>
 	<div class="turn-info text-center">
 		<div class="turn-info__round-number">Round {{ getCurrentTurn }}</div>
-		<div class="turn-info__player mt-2 mb-6">{{ getPlayerById(getCurrentPlayerId).name }}</div>
+		<div class="turn-info__player mt-2 mb-6">{{ getPlayerById(getCurrentPlayerId)?.name }}</div>
 		<div class="turn-info__darts d-flex">
 			<img src="@/assets/dart.svg" alt="Dart" class="turn-info__dart" v-for="i in getDarts" :key="i" />
 		</div>

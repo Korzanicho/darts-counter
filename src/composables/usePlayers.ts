@@ -1,16 +1,16 @@
-import { Ref, computed, reactive } from 'vue'
+import { computed, reactive } from 'vue'
 import { useGame } from './useGame'
 import { useLocalstorage } from './useLocalstorage';
-import type { Player } from '../interfaces'
+import type { Player, Players, UsePlayers } from '../interfaces'
 
-const players = reactive({
+const players: Players = reactive({
   value: []
 });
 
-export const usePlayers = () => {
+export const usePlayers: Function = (): UsePlayers => {
 
-  const addPlayerPoints = (id: number, points: number) => {
-    const playerIndex = players.value.findIndex(player => player.id === id);
+  const addPlayerPoints = (id: number, points: number): void => {
+    const playerIndex: number = players.value.findIndex(player => player.id === id);
     if (players.value[playerIndex].score - points < 0) return;
     players.value[playerIndex].score -= points;
 
@@ -23,48 +23,48 @@ export const usePlayers = () => {
     useLocalstorage().savePlayers(players.value);
   };
 
-  const setScore = (id: number, score: number) => {
+  const setScore = (id: number, score: number): void => {
     const playerIndex = players.value.findIndex(player => player.id === id);
     players.value[playerIndex].score = score;
 
     useLocalstorage().savePlayers(players.value); 
   };
   
-  const addPlayer = (player: Player) => {
+  const addPlayer = (player: Player): void => {
     players.value.push(player);
 
     useLocalstorage().savePlayers(players.value);
   };
 
-  const setPlayers = (newPlayers: Player[]) => {
+  const setPlayers = (newPlayers: Player[]): void => {
     players.value = newPlayers;
   };
 
-  const removePlayer = (id: number) => {
+  const removePlayer = (id: number): void => {
     players.value = players.value.filter(player => player.id !== id);
 
     useLocalstorage().savePlayers(players.value);
   };
 
-  const editPlayer = (player: Player) => {
-    const playerIndex = players.value.findIndex(p => p.id === player.id);
+  const editPlayer = (player: Player): void => {
+    const playerIndex: number = players.value.findIndex(p => p.id === player.id);
     players.value.splice(playerIndex, 1, player);
 
     useLocalstorage().savePlayers(players.value);
   };
 
-  const getPlayerById = (id: number) => {
+  const getPlayerById = (id: number): Player | undefined => {
     return players.value.find(player => player.id === id);
   };
 
-  const getPlayers = computed(() => players.value);
+  const getPlayers = computed<Player[]>(() => players.value);
 
-  const removePlayers = () => {
+  const removePlayers = (): void => {
     players.value = [];
     useLocalstorage().savePlayers(players.value);
   };
 
-  const resetScores = () => {
+  const resetScores = (): void => {
     players.value.forEach(player => {
       player.score = 501;
     });

@@ -9,10 +9,17 @@ const { getDarts, setDarts, changePlayerToNext, getCurrentPlayerId } = useGame()
 const { addPlayerPoints } = usePlayers()
 
 const addPoints = (e: Event) => {
-	if (getDarts.value < 1) return;
-	setDarts(getDarts.value - 1)
-	points.value += parseInt(e.target.getAttribute('data-value'))
-	addPlayerPoints(getCurrentPlayerId.value, e.target.getAttribute('data-value'))
+  if (getDarts.value < 1 || !e.target) return;
+
+  setDarts(getDarts.value - 1);
+  const target = e.target as HTMLElement;
+  const dataValue = target.getAttribute('data-value');
+
+  if (!dataValue) return;
+
+  const value = parseInt(dataValue);
+  points.value += value;
+  addPlayerPoints(getCurrentPlayerId.value, value);
 }
 
 const resolveFault = () => {
