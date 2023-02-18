@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { usePlayers } from '../composables/usePlayers'
+import { ref, watch } from 'vue'
+import { useGame } from '@/composables/useGame'
+import { usePlayers } from '@/composables/usePlayers'
 
 const { getPlayers, setScore } = usePlayers();
 
 const editablePlayerId = ref(0)
 const editablePoints = ref(0)
+const game = useGame()
 
 const handleEditPoints = (id: number, score: number) => {
 	editablePlayerId.value = id
@@ -16,6 +18,12 @@ const handleSavePoints = () => {
 	setScore(editablePlayerId.value, editablePoints.value)
 	editablePlayerId.value = 0
 }
+
+const activePlayerId = ref(game.getCurrentPlayerId)
+
+watch(() => game.getCurrentPlayerId, (newValue) => {
+	activePlayerId.value = newValue
+})
 </script>
 
 <template>
@@ -38,6 +46,7 @@ const handleSavePoints = () => {
 				<tr
 					v-for="player in getPlayers"
 					:key="player.id"
+          :class="{ 'the-leaderboard__player--active': player.id === activePlayerId }"
 				>
 					<td class="the-leaderboard__player-name" :style="{ '--color-player': player.color }">{{ player.name }}</td>
 					<td class="the-leaderboard__score text-center">
@@ -81,4 +90,6 @@ const handleSavePoints = () => {
 			height: 1rem
 			margin-right: 1rem
 			background-color: var(--color-player)
+		&__player--active
+			background-color: rgb(248 248 248 / 10%)
 </style>
