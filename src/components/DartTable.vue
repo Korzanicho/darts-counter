@@ -3,23 +3,36 @@ import { ref } from 'vue'
 import { useGame } from '@/composables/useGame'
 import { usePlayers } from '@/composables/usePlayers'
 
+import type { Ref } from 'vue'
+
 let lastColor = ''
-const points = ref(0)
+const points: Ref<number> = ref(0)
 const { getDarts, setDarts, changePlayerToNext, getCurrentPlayerId } = useGame()
 const { addPlayerPoints } = usePlayers()
 
+const blockTime: number = 1000;
+let isBlocked: Ref<boolean> = ref(false);
+
+const block = () => {
+	isBlocked.value = true;
+	setTimeout(() => {
+		isBlocked.value = false;
+	}, blockTime);
+}
 const addPoints = (e: Event) => {
+	if (isBlocked.value) return;
   if (getDarts.value < 1 || !e.target) return;
 
   setDarts(getDarts.value - 1);
   const target = e.target as HTMLElement;
-  const dataValue = target.getAttribute('data-value');
+  const dataValue = target.getAttribute('data-value')
 
   if (!dataValue) return;
 
   const value = parseInt(dataValue);
   points.value += value;
   addPlayerPoints(getCurrentPlayerId.value, value);
+	block();
 }
 
 const resolveFault = () => {
@@ -69,129 +82,129 @@ const restoreColor = (e: Event) => {
 				<circle id="circle16" cy="0" cx="0" r="226"/>
 				<g id="dartboard">
 
-					<use id="use21" xlink:href="#double" height="500" width="500" y="0" x="0" fill="red" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="40" />
+					<use id="use21" xlink:href="#double" height="500" width="500" y="0" x="0" fill="red" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="40" />
 
-					<use id="use23" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="20" />
-					<g id="x3-20" data-value="20">
-						<use id="use25" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="60"/>
-						<use id="use27" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="20"/>
+					<use id="use23" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="20" />
+					<g id="x3-20" :class="{'pointer': !isBlocked}" data-value="20">
+						<use id="use25" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="60"/>
+						<use id="use27" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="20"/>
 					</g>
 					<g id="g29" transform="rotate(18)">
-						<use id="use31" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="10" />
-						<use id="use33" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="5"/>
-						<use id="use35" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="15" />
-						<use id="use37" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="5" />
+						<use id="use31" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="10" />
+						<use id="use33" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="5"/>
+						<use id="use35" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="15" />
+						<use id="use37" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="5" />
 					</g>
 					<g id="g39" transform="rotate(36)">
-						<use id="use41" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="24" />
-						<use id="use43" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="12" />
-						<use id="use45" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="36" />
-						<use id="use47" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="12" />
+						<use id="use41" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="24" />
+						<use id="use43" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="12" />
+						<use id="use45" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="36" />
+						<use id="use47" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="12" />
 					</g>
 					<g id="g49" transform="rotate(54)">
-						<use id="use51" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="18" />
-						<use id="use53" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="9" />
-						<use id="use55" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="27" />
-						<use id="use57" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="9" />
+						<use id="use51" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="18" />
+						<use id="use53" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="9" />
+						<use id="use55" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="27" />
+						<use id="use57" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="9" />
 					</g>
 					<g id="g59" transform="rotate(72.001)">
-						<use id="use61" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="28" />
-						<use id="use63" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="14" />
-						<use id="use65" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="42" />
-						<use id="use67" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="14" />
+						<use id="use61" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="28" />
+						<use id="use63" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="14" />
+						<use id="use65" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="42" />
+						<use id="use67" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="14" />
 					</g>
 					<g id="g69" transform="rotate(90)">
-						<use id="use71" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="22" />
-						<use id="use73" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="11" />
-						<use id="use75" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="33" />
-						<use id="use77" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="11" />
+						<use id="use71" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="22" />
+						<use id="use73" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="11" />
+						<use id="use75" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="33" />
+						<use id="use77" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="11" />
 					</g>
 					<g id="g79" transform="rotate(108)">
-						<use id="use81" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="16" />
-						<use id="use83" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="8" />
-						<use id="use85" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="24" />
-						<use id="use87" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="8" />
+						<use id="use81" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="16" />
+						<use id="use83" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="8" />
+						<use id="use85" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="24" />
+						<use id="use87" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="8" />
 					</g>
 					<g id="g89" transform="rotate(126)">
-						<use id="use91" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="32" />
-						<use id="use93" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="16" />
-						<use id="use95" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="48" />
-						<use id="use97" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="16" />
+						<use id="use91" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="32" />
+						<use id="use93" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="16" />
+						<use id="use95" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="48" />
+						<use id="use97" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="16" />
 					</g>
 					<g id="g99" transform="rotate(144)">
-						<use id="use101" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="14" />
-						<use id="use103" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="7" />
-						<use id="use105" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="21" />
-						<use id="use107" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="7" />
+						<use id="use101" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="14" />
+						<use id="use103" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="7" />
+						<use id="use105" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="21" />
+						<use id="use107" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="7" />
 					</g>
 					<g id="g109" transform="rotate(162)">
-						<use id="use111" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="38" />
-						<use id="use113" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="19" />
-						<use id="use115" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="57" />
-						<use id="use117" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="19" />
+						<use id="use111" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="38" />
+						<use id="use113" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="19" />
+						<use id="use115" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="57" />
+						<use id="use117" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="19" />
 					</g>
 					<g id="g119" transform="scale(-1)">
-						<use id="use121" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="6" />
-						<use id="use123" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="3" />
-						<use id="use125" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="9" />
-						<use id="use127" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="3" />
+						<use id="use121" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="6" />
+						<use id="use123" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="3" />
+						<use id="use125" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="9" />
+						<use id="use127" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="3" />
 					</g>
 					<g id="g129" transform="rotate(198)">
-						<use id="use131" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="34" />
-						<use id="use133" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="17" />
-						<use id="use135" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="51" />
-						<use id="use137" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="17" />
+						<use id="use131" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="34" />
+						<use id="use133" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="17" />
+						<use id="use135" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="51" />
+						<use id="use137" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="17" />
 					</g>
 					<g id="g139" transform="rotate(216)">
-						<use id="use141" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="4" />
-						<use id="use143" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="2" />
-						<use id="use145" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="6" />
-						<use id="use147" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="2" />
+						<use id="use141" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="4" />
+						<use id="use143" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="2" />
+						<use id="use145" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="6" />
+						<use id="use147" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="2" />
 					</g>
 					<g id="g149" transform="rotate(234)">
-						<use id="use151" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="30" />
-						<use id="use153" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="15" />
-						<use id="use155" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="45" />
-						<use id="use157" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="15" />
+						<use id="use151" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="30" />
+						<use id="use153" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="15" />
+						<use id="use155" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="45" />
+						<use id="use157" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="15" />
 					</g>
 					<g id="g159" transform="rotate(252)">
-						<use id="use161" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="20" />
-						<use id="use163" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="10" />
-						<use id="use165" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="30" />
-						<use id="use167" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="10" />
+						<use id="use161" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="20" />
+						<use id="use163" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="10" />
+						<use id="use165" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="30" />
+						<use id="use167" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="10" />
 					</g>
 					<g id="g169" transform="rotate(-90)">
-						<use id="use171" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="18" />
-						<use id="use173" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="9" />
-						<use id="use175" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="27" />
-						<use id="use177" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="9" />
+						<use id="use171" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="18" />
+						<use id="use173" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="9" />
+						<use id="use175" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="27" />
+						<use id="use177" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="9" />
 					</g>
 					<g id="g179" transform="rotate(-72.001)">
-						<use id="use181" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="26"/>
-						<use id="use183" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="13" />
-						<use id="use185" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="39" />
-						<use id="use187" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="13" />
+						<use id="use181" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="26"/>
+						<use id="use183" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="13" />
+						<use id="use185" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="39" />
+						<use id="use187" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="13" />
 					</g>
 					<g id="g189" transform="rotate(-54)">
-						<use id="use191" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="8" />
-						<use id="use193" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="4" />
-						<use id="use195" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="12" />
-						<use id="use197" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="4" />
+						<use id="use191" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="8" />
+						<use id="use193" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="4" />
+						<use id="use195" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="12" />
+						<use id="use197" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="4" />
 					</g>
 					<g id="g199" transform="rotate(-36)">
-						<use id="use201" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="36" />
-						<use id="use203" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="18" />
-						<use id="use205" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="54" />
-						<use id="use207" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="18" />
+						<use id="use201" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="36" />
+						<use id="use203" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="18" />
+						<use id="use205" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#ff0000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="54" />
+						<use id="use207" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#000000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="18" />
 					</g>
 					<g id="g209" transform="rotate(-18)">
-						<use id="use211" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="2" />
-						<use id="use213" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="1" />
-						<use id="use215" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="3" />
-						<use id="use217" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="1" />
+						<use id="use211" xlink:href="#double" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="2" />
+						<use id="use213" xlink:href="#outer" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="1" />
+						<use id="use215" xlink:href="#triple" height="500" width="500" y="0" x="0" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="3" />
+						<use id="use217" xlink:href="#inner" height="500" width="500" y="0" x="0" fill="#ffffff" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="1" />
 					</g>
-					<circle id="circle219" stroke-width="0" cy="0" cx="0" r="16.4" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="25" />
-					<circle id="circle221" stroke-width="0" cy="0" cx="0" r="6.85" fill="#f00" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" data-value="50" />
+					<circle id="circle219" stroke-width="0" cy="0" cx="0" r="16.4" fill="#008000" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="25" />
+					<circle id="circle221" stroke-width="0" cy="0" cx="0" r="6.85" fill="#f00" @click="addPoints" @mouseover="changeColor" @mouseout="restoreColor" :class="{'pointer': !isBlocked}" data-value="50" />
 
 					<g id="borders">
 						<use id="use224" xlink:href="#refwire" height="500" width="500" y="0" x="0"/>
@@ -265,4 +278,7 @@ const restoreColor = (e: Event) => {
 
 		&__button
 			flex-basis: 35%
+
+		.pointer
+			cursor: pointer
 </style>
