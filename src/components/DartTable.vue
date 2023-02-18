@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { watch, ref } from 'vue'
-import { useGame } from '../composables/useGame'
-import { usePlayers } from '../composables/usePlayers'
+import { ref } from 'vue'
+import { useGame } from '@/composables/useGame'
+import { usePlayers } from '@/composables/usePlayers'
 
 let lastColor = ''
 const points = ref(0)
@@ -55,10 +55,10 @@ const restoreColor = (e: Event) => {
 
 <template>
 	<div class="dart-table">
-		<div class="dart-table__points">Current points: {{ points }}</div>
-		<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="-250 -250 500 500" version="1.0">
+		<div class="dart-table__points text-center mb-4 font-weight-medium">Round {{ useGame().getCurrentTurn }} points: {{ points }}</div>
+		<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-250 -250 500 500">
 			<defs id="defs6">
-				<line id="refwire" y2="167.4" y1="16.2" stroke="#c0c0c0" x2="26.52" x1="2.566"/>
+				<line y2="167.4" y1="16.2" stroke="#c0c0c0" x2="26.52" x1="2.566"/>
 				<path id="SLICE" stroke-width="0" d="m0 0l15.64 98.77c-10.362 1.64-20.918 1.64-31.28 0l15.64-98.77z"/>
 				<use id="double" xlink:href="#SLICE" transform="scale(1.695)" height="500" width="500" y="0" x="0"/>
 				<use id="outer" xlink:href="#SLICE" transform="scale(1.605)" height="500" width="500" y="0" x="0"/>
@@ -259,6 +259,9 @@ const restoreColor = (e: Event) => {
 		min-height: 300px
 		max-width: 500px
 		margin: 0 auto
+
+		&__points
+			font-size: 1.2rem
 
 		&__button
 			flex-basis: 35%
