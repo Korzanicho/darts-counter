@@ -29,13 +29,13 @@ import type { Ref } from 'vue'
 const { addPlayer, getPlayers } = usePlayers()
 
 const colorOptions = [
-  '#FFABCD',
-  '#00FF00',
-  '#0000FF',
-  '#FFFF00',
-  '#00FFFF',
-  '#FF00FF',
-  '#800000',
+  '#d5759d',
+  '#58b958',
+  '#4848ce',
+  '#c7c761',
+  '#3dc0c0',
+  '#d243d2',
+  '#f14646',
   '#808000',
   '#008080',
   '#008000',
