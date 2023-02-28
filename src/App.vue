@@ -11,34 +11,45 @@ import { useGame } from './composables/useGame'
 import { usePlayers } from './composables/usePlayers'
 import { useLocalstorage } from './composables/useLocalstorage'
 
-const { getPlayers } = usePlayers();
-const { getState, setState, setCurrentPlayerId, setCurrentTurn } = useGame();
+const { getPlayers } = usePlayers()
+const {
+  getState,
+  setState,
+  setCurrentPlayerId,
+  setCurrentTurn,
+  setDarts,
+  setMemo,
+} = useGame()
 
 const startGame = () => {
   setCurrentTurn(1)
   setState('playing')
-  setCurrentPlayerId(getPlayers.value[0].id);
+  setCurrentPlayerId(getPlayers.value[0].id)
 }
 
 const restoreData = () => {
-  const state = useLocalstorage().getState();
-  const players = useLocalstorage().getPlayers();
-  const currentTurn = useLocalstorage().getCurrentTurn();
-  const currentPlayerId = useLocalstorage().getCurrentPlayerId();
+  const memo = useLocalstorage().getMemo()
+  const state = useLocalstorage().getState()
+  const darts = useLocalstorage().getDarts()
+  const players = useLocalstorage().getPlayers()
+  const currentTurn = useLocalstorage().getCurrentTurn()
+  const currentPlayerId = useLocalstorage().getCurrentPlayerId()
 
-  if (!players) return;
+  if (!players) return
 
-  usePlayers().setPlayers(players);
+  usePlayers().setPlayers(players)
 
   if (state && currentPlayerId) {
-    setState(state);
-    setCurrentTurn(currentTurn);
-    setCurrentPlayerId(currentPlayerId);
+    setMemo(memo)
+    setState(state)
+    setDarts(darts)
+    setCurrentTurn(currentTurn)
+    setCurrentPlayerId(currentPlayerId)
   }
 }
 
 onMounted(() => {
-  restoreData();
+  restoreData()
 })
 </script>
 
@@ -57,7 +68,7 @@ onMounted(() => {
         START
       </v-btn>
     </div>
-  
+
     <div class="game" v-if="getState === 'playing'">
       <TurnInfo />
       <v-row class="pa-3">
@@ -76,5 +87,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style lang="sass" scoped>
-</style>
+<style lang="sass" scoped></style>

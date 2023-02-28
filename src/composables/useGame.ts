@@ -14,6 +14,26 @@ const currentTurn: Ref<number> = ref(0)
 const darts: Ref<number> = ref(3)
 const currentWinnerName: Ref<string> = ref('')
 const winners: Ref<Player[]> = ref([])
+const memo: Ref = ref([])
+
+const setMemo = (newMemo: number[]): void => {
+  memo.value = newMemo
+  localStorage.saveMemo(newMemo)
+}
+
+const resetMemo = (): void => {
+  memo.value.length = 0
+  localStorage.saveMemo(memo.value)
+}
+const addMemo = (score: number): void => {
+  memo.value.push(score)
+  localStorage.saveMemo(memo.value)
+}
+const getLatestMemo = (): number => {
+  const lastScore = memo.value.pop()
+  localStorage.saveMemo(memo.value)
+  return lastScore
+}
 
 export const useGame: Function = (): UseGame => {
   const addWinner = (player: Player): void => {
@@ -43,6 +63,7 @@ export const useGame: Function = (): UseGame => {
 
   const setDarts = (newDarts: number): void => {
     darts.value = newDarts
+    localStorage.saveDarts(newDarts)
   }
 
   const setCurrentWinnerName = (name: string): void => {
@@ -75,6 +96,7 @@ export const useGame: Function = (): UseGame => {
     usePlayers().resetScores()
   }
 
+  const getMemo: ComputedRef<number[]> = computed(() => memo.value)
   const getState: ComputedRef<string> = computed(() => state.value)
   const getDarts: ComputedRef<number> = computed(() => darts.value)
   const getWinners: ComputedRef<Player[]> = computed(() => winners.value)
@@ -87,16 +109,21 @@ export const useGame: Function = (): UseGame => {
   )
 
   return {
+    getMemo,
     getState,
     getDarts,
     getWinners,
     getCurrentTurn,
     getCurrentPlayerId,
     getCurrentWinnerName,
+    addMemo,
+    setMemo,
     setState,
     setDarts,
+    resetMemo,
     addWinner,
     resetGame,
+    getLatestMemo,
     setCurrentTurn,
     setCurrentPlayerId,
     changePlayerToNext,
