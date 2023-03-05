@@ -13,7 +13,7 @@ export default defineConfig({
       manifest: {
         name: 'Webkor Darts',
         short_name: 'Darts',
-        start_url: 'https://darts.webkor.pl/',
+        start_url: '/',
         display: 'standalone',
         icons: [
           {
