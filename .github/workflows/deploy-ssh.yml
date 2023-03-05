@@ -5,6 +5,9 @@ on:
       - 'release-*'
     types:
       - closed
+  push:
+    branches:
+      - 'release-*'
 
 jobs:
   build-and-deploy:
