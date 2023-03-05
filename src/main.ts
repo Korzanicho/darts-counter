@@ -1,17 +1,17 @@
-import { createApp } from 'vue'
-import App from './App.vue'
+import { createApp } from 'vue';
+import App from './App.vue';
 
 // Styles
-import './assets/styles/variables.sass'
-import './assets/styles/helpers.sass'
-import './assets/styles/global.sass'
+import './assets/styles/variables.sass';
+import './assets/styles/helpers.sass';
+import './assets/styles/global.sass';
 
 // Vuetify
-import 'vuetify/styles'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-import '@mdi/font/css/materialdesignicons.css'
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import '@mdi/font/css/materialdesignicons.css';
 
 const vuetify = createVuetify({
   components,
@@ -20,6 +20,12 @@ const vuetify = createVuetify({
   icons: {
     defaultSet: 'mdi',
   },
-})
+});
 
-createApp(App).use(vuetify).mount('#app')
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+
+createApp(App).use(vuetify).mount('#app');
