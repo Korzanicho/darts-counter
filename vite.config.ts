@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
+      registerType: 'autoUpdate',
       manifest: {
         name: 'Webkor Darts',
         short_name: 'Darts',
