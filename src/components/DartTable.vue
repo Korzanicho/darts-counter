@@ -1032,7 +1032,7 @@ const undoShot = () => {
               @mouseover="changeColor"
               @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
-              data-value="9"
+              data-value="6"
             />
             <use
               id="use175"
@@ -1060,7 +1060,7 @@ const undoShot = () => {
               @mouseover="changeColor"
               @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
-              data-value="9"
+              data-value="6"
             />
           </g>
           <g id="g179" transform="rotate(-72.001)">
