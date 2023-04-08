@@ -31,7 +31,10 @@ watch(
 
 <template>
   <div class="the-leaderboard">
-    <v-table class="the-leaderboard__table" theme="dark">
+    <v-table
+      class="the-leaderboard__table"
+      theme="dark"
+    >
       <thead>
         <tr>
           <th class="the-leaderboard__title text-left">Player</th>
@@ -54,14 +57,17 @@ watch(
             {{ player.name }}
           </td>
           <td class="the-leaderboard__score text-center">
-            <span v-if="editablePlayerId !== player.id">{{
-              player.score
-            }}</span>
+            <span v-if="editablePlayerId !== player.id">
+              {{ player.score }}
+            </span>
             <v-text-field
               v-else
               type="number"
               v-model="editablePoints"
               label="Player points"
+							density="compact"
+							hide-details
+              class="the-leaderboard__score-input mx-auto my-1"
             />
           </td>
           <td class="the-leaderboard__edit text-right">
@@ -98,4 +104,23 @@ watch(
 		background-color: var(--color-player)
 	&__player--active
 		background-color: rgb(248 248 248 / 10%)
+	&__score-input
+		width: 3rem
+		margin: 0
+		padding: 0
+		font-size: 1rem
+		text-align: center
+		border: none
+		background-color: transparent
+		color: white
+		
+		label
+			display: none
+
+		input
+			padding: 0
+
+		&::placeholder
+			color: white
+			opacity: 0.5
 </style>

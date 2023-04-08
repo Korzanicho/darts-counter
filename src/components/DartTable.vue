@@ -7,6 +7,8 @@ import GameActions from '@/components/GameActions.vue'
 import type { Ref } from 'vue'
 
 let lastColor = ''
+let isRotated = ref(false)
+
 const points: Ref<number> = ref(0)
 const {
   getDarts,
@@ -67,6 +69,15 @@ const resetPoints = () => {
   resetMemo()
 }
 
+const toggleRotateClass = () => {
+  isRotated.value = !isRotated.value
+}
+
+const handlePlayerChange = () => {
+  toggleRotateClass()
+  resetPoints()
+}
+
 const undoShot = () => {
   if (getDarts.value > 2) return
 
@@ -86,9 +97,17 @@ const undoShot = () => {
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       viewBox="-250 -250 500 500"
+      class="dart-table__svg"
+      :class="{ 'dart-table__svg--rotated': isRotated }"
     >
       <defs id="defs6">
-        <line y2="167.4" y1="16.2" stroke="#c0c0c0" x2="26.52" x1="2.566" />
+        <line
+          y2="167.4"
+          y1="16.2"
+          stroke="#c0c0c0"
+          x2="26.52"
+          x1="2.566"
+        />
         <path
           id="SLICE"
           stroke-width="0"
@@ -131,8 +150,16 @@ const undoShot = () => {
           x="0"
         />
       </defs>
-      <g id="g14" transform="matrix(1.104 0 0 -1.104 -1.3036 -.48743)">
-        <circle id="circle16" cy="0" cx="0" r="226" />
+      <g
+        id="g14"
+        transform="matrix(1.104 0 0 -1.104 -1.3036 -.48743)"
+      >
+        <circle
+          id="circle16"
+          cy="0"
+          cx="0"
+          r="226"
+        />
         <g id="dartboard">
           <use
             id="use21"
@@ -163,7 +190,11 @@ const undoShot = () => {
             :class="{ pointer: !isBlocked }"
             data-value="20"
           />
-          <g id="x3-20" :class="{ pointer: !isBlocked }" data-value="20">
+          <g
+            id="x3-20"
+            :class="{ pointer: !isBlocked }"
+            data-value="20"
+          >
             <use
               id="use25"
               xlink:href="#triple"
@@ -193,7 +224,10 @@ const undoShot = () => {
               data-value="20"
             />
           </g>
-          <g id="g29" transform="rotate(18)">
+          <g
+            id="g29"
+            transform="rotate(18)"
+          >
             <use
               id="use31"
               xlink:href="#double"
@@ -251,7 +285,10 @@ const undoShot = () => {
               data-value="5"
             />
           </g>
-          <g id="g39" transform="rotate(36)">
+          <g
+            id="g39"
+            transform="rotate(36)"
+          >
             <use
               id="use41"
               xlink:href="#double"
@@ -309,7 +346,10 @@ const undoShot = () => {
               data-value="12"
             />
           </g>
-          <g id="g49" transform="rotate(54)">
+          <g
+            id="g49"
+            transform="rotate(54)"
+          >
             <use
               id="use51"
               xlink:href="#double"
@@ -367,7 +407,10 @@ const undoShot = () => {
               data-value="9"
             />
           </g>
-          <g id="g59" transform="rotate(72.001)">
+          <g
+            id="g59"
+            transform="rotate(72.001)"
+          >
             <use
               id="use61"
               xlink:href="#double"
@@ -425,7 +468,10 @@ const undoShot = () => {
               data-value="14"
             />
           </g>
-          <g id="g69" transform="rotate(90)">
+          <g
+            id="g69"
+            transform="rotate(90)"
+          >
             <use
               id="use71"
               xlink:href="#double"
@@ -483,7 +529,10 @@ const undoShot = () => {
               data-value="11"
             />
           </g>
-          <g id="g79" transform="rotate(108)">
+          <g
+            id="g79"
+            transform="rotate(108)"
+          >
             <use
               id="use81"
               xlink:href="#double"
@@ -541,7 +590,10 @@ const undoShot = () => {
               data-value="8"
             />
           </g>
-          <g id="g89" transform="rotate(126)">
+          <g
+            id="g89"
+            transform="rotate(126)"
+          >
             <use
               id="use91"
               xlink:href="#double"
@@ -599,7 +651,10 @@ const undoShot = () => {
               data-value="16"
             />
           </g>
-          <g id="g99" transform="rotate(144)">
+          <g
+            id="g99"
+            transform="rotate(144)"
+          >
             <use
               id="use101"
               xlink:href="#double"
@@ -657,7 +712,10 @@ const undoShot = () => {
               data-value="7"
             />
           </g>
-          <g id="g109" transform="rotate(162)">
+          <g
+            id="g109"
+            transform="rotate(162)"
+          >
             <use
               id="use111"
               xlink:href="#double"
@@ -715,7 +773,10 @@ const undoShot = () => {
               data-value="19"
             />
           </g>
-          <g id="g119" transform="scale(-1)">
+          <g
+            id="g119"
+            transform="scale(-1)"
+          >
             <use
               id="use121"
               xlink:href="#double"
@@ -773,7 +834,10 @@ const undoShot = () => {
               data-value="3"
             />
           </g>
-          <g id="g129" transform="rotate(198)">
+          <g
+            id="g129"
+            transform="rotate(198)"
+          >
             <use
               id="use131"
               xlink:href="#double"
@@ -831,7 +895,10 @@ const undoShot = () => {
               data-value="17"
             />
           </g>
-          <g id="g139" transform="rotate(216)">
+          <g
+            id="g139"
+            transform="rotate(216)"
+          >
             <use
               id="use141"
               xlink:href="#double"
@@ -889,7 +956,10 @@ const undoShot = () => {
               data-value="2"
             />
           </g>
-          <g id="g149" transform="rotate(234)">
+          <g
+            id="g149"
+            transform="rotate(234)"
+          >
             <use
               id="use151"
               xlink:href="#double"
@@ -947,7 +1017,10 @@ const undoShot = () => {
               data-value="15"
             />
           </g>
-          <g id="g159" transform="rotate(252)">
+          <g
+            id="g159"
+            transform="rotate(252)"
+          >
             <use
               id="use161"
               xlink:href="#double"
@@ -1005,7 +1078,10 @@ const undoShot = () => {
               data-value="10"
             />
           </g>
-          <g id="g169" transform="rotate(-90)">
+          <g
+            id="g169"
+            transform="rotate(-90)"
+          >
             <use
               id="use171"
               xlink:href="#double"
@@ -1063,7 +1139,10 @@ const undoShot = () => {
               data-value="6"
             />
           </g>
-          <g id="g179" transform="rotate(-72.001)">
+          <g
+            id="g179"
+            transform="rotate(-72.001)"
+          >
             <use
               id="use181"
               xlink:href="#double"
@@ -1121,7 +1200,10 @@ const undoShot = () => {
               data-value="13"
             />
           </g>
-          <g id="g189" transform="rotate(-54)">
+          <g
+            id="g189"
+            transform="rotate(-54)"
+          >
             <use
               id="use191"
               xlink:href="#double"
@@ -1179,7 +1261,10 @@ const undoShot = () => {
               data-value="4"
             />
           </g>
-          <g id="g199" transform="rotate(-36)">
+          <g
+            id="g199"
+            transform="rotate(-36)"
+          >
             <use
               id="use201"
               xlink:href="#double"
@@ -1237,7 +1322,10 @@ const undoShot = () => {
               data-value="18"
             />
           </g>
-          <g id="g209" transform="rotate(-18)">
+          <g
+            id="g209"
+            transform="rotate(-18)"
+          >
             <use
               id="use211"
               xlink:href="#double"
@@ -1642,7 +1730,10 @@ const undoShot = () => {
       </g>
     </svg>
   </div>
-  <GameActions @player-change="resetPoints" @undo="undoShot" />
+  <GameActions
+    @player-change="handlePlayerChange"
+    @undo="undoShot"
+  />
 </template>
 
 <style lang="sass" scoped>
@@ -1660,4 +1751,10 @@ const undoShot = () => {
 
 	.pointer
 		cursor: pointer
+
+	&__svg
+		transition: transform 1s
+		&--rotated
+			transform: rotate(360deg)
+    
 </style>

@@ -15,8 +15,8 @@ watch(getMemo, (newValue) => {
 <template>
   <div class="turn-info text-center">
     <div class="turn-info__round-number">Round {{ getCurrentTurn }}</div>
-    <div class="turn-info__player mt-2 mb-6">
-      {{ getPlayerById(getCurrentPlayerId)?.name }}
+    <div class="turn-info__player mt-3 mb-6">
+      {{ getPlayerById(getCurrentPlayerId)?.name }} ({{ getPlayerById(getCurrentPlayerId)?.score }})
     </div>
     <div class="turn-info__darts d-flex">
       <div class="mr-2">
@@ -46,10 +46,10 @@ watch(getMemo, (newValue) => {
   &__player
     font-size: 1.5rem
   &__darts
+    top: 0
+    right: 0
     font-size: 1.5rem
     position: absolute
-    right: 35px
-    top: 0
   &__dart
     width: 1rem
     margin-right: 0.5rem

@@ -1,18 +1,26 @@
 <template>
   <v-container class="new-player-form">
-    <v-form ref="form" @submit.prevent="addNewPlayer">
+    <v-form
+      ref="form"
+      @submit.prevent="addNewPlayer"
+    >
       <v-row class="justify-center">
-        <v-col cols="12" sm="6" md="4">
+        <v-col cols="7">
           <v-text-field
             label="Player name"
             v-model="playerName"
             required
-          ></v-text-field>
+          />
         </v-col>
-        <v-col cols="12" sm="6" md="4">
-          <v-btn class="mx-auto" type="submit" color="primary" size="large"
-            >Add player</v-btn
+        <v-col cols="4">
+          <v-btn
+            class="mx-auto"
+            type="submit"
+            color="primary"
+            height="55px"
           >
+            Add
+          </v-btn>
         </v-col>
       </v-row>
     </v-form>
@@ -20,13 +28,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { usePlayers } from '@/composables/usePlayers'
+import { ref } from 'vue';
+import { usePlayers } from '@/composables/usePlayers';
 
-import type { Player } from '@/interfaces'
-import type { Ref } from 'vue'
+import type { Player } from '@/interfaces';
+import type { Ref } from 'vue';
 
-const { addPlayer, getPlayers } = usePlayers()
+const { addPlayer, getPlayers } = usePlayers();
 
 const colorOptions = [
   '#d5759d',
@@ -41,21 +49,24 @@ const colorOptions = [
   '#008000',
   '#800080',
   '#000080',
-]
+];
 
-const playerName: Ref<string> = ref('')
+const playerName: Ref<string> = ref('');
 
-const addNewPlayer = () => {
-  const colors = colorOptions.filter(
-    (color) => !getPlayers.value.some((player: Player) => player.color == color)
-  )
+const addNewPlayer = (): any => {
+  const colors = colorOptions.filter((color) => !getPlayers.value.some((player: Player) => player.color == color));
   const player: Player = {
     id: Date.now(),
     name: playerName.value,
     color: colors.shift() || '#FFABCD',
     score: 501,
-  }
-  addPlayer(player)
-  playerName.value = ''
-}
+  };
+  addPlayer(player);
+  playerName.value = '';
+};
 </script>
+
+<style scoped lang="sass">
+.new-player-form
+  max-width: 500px
+</style>
