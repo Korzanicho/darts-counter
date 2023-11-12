@@ -1,7 +1,7 @@
 <template>
   <v-container class="new-player-form">
     <img
-      src="@/assets/Darts Counter - Logo.png"
+      src="../assets/Darts-Counter-Logo.png"
       alt="Darts Counter"
       class="new-player-form__logo"
     />
