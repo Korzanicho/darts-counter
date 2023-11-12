@@ -143,7 +143,7 @@ onMounted(() => {
 <style lang="sass" scoped>
 .game
 	position: relative
-	.game__close
+	&__close
 		z-index: 1
 		position: absolute
 		top: 0

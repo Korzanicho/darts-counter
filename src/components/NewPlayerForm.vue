@@ -1,5 +1,10 @@
 <template>
   <v-container class="new-player-form">
+    <img
+      src="@/assets/Darts Counter - Logo.png"
+      alt="Darts Counter"
+      class="new-player-form__logo"
+    />
     <v-form
       ref="form"
       @submit.prevent="addNewPlayer"
@@ -69,4 +74,11 @@ const addNewPlayer = (): any => {
 <style scoped lang="sass">
 .new-player-form
   max-width: 500px
+
+  &__logo
+    width: 100%
+    max-width: 300px
+    margin: 0 auto
+    display: block
+    margin-bottom: 2rem
 </style>
