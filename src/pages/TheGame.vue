@@ -73,6 +73,7 @@ onMounted(() => {
 			&copy; 2024 Darts Counter |
 			<a href="/privacy-policy.html">Privacy Policy</a> |
 			<a href="/terms-and-conditions.html">Terms & Conditions</a>
+			<a href=".well-known/assetlinks.json">TEST</a>
 		</div>
 	</div>
 
