@@ -1,8 +1,8 @@
 [{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "pl.webkor.darts.twa",
-        "sha256_cert_fingerprints": ["69:F0:6B:0A:B5:F6:AC:B0:1D:94:F6:B1:3E:F5:47:9E:EC:70:CA:62:03:C3:01:09:36:D0:28:B5:38:69:2C:B1"]
-      }
-    }]
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "pl.webkor.darts.twa",
+    "sha256_cert_fingerprints": ["69:F0:6B:0A:B5:F6:AC:B0:1D:94:F6:B1:3E:F5:47:9E:EC:70:CA:62:03:C3:01:09:36:D0:28:B5:38:69:2C:B1"]
+  }
+}]

@@ -1,6 +1,8 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 
+import router from "./router";
+
 // Styles
 import './assets/styles/variables.sass';
 import './assets/styles/helpers.sass';
@@ -28,4 +30,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-createApp(App).use(vuetify).mount('#app');
+const app = createApp(App);
+
+app.use(router);
+app.use(vuetify);
+app.mount('#app');

@@ -1,7 +1,7 @@
 {
   "name": "darts-counter",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "vue": "^3.2.45",
+    "vue-router": "^4.3.0",
     "vuetify": "^3.1.2"
   },
   "devDependencies": {
