@@ -1,95 +1,146 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useGame } from '@/composables/useGame'
-import { usePlayers } from '@/composables/usePlayers'
-import GameActions from '@/components/GameActions.vue'
+import { ref, onMounted } from 'vue';
+import { useGame } from '@/composables/useGame';
+import { usePlayers } from '@/composables/usePlayers';
+import GameActions from '@/components/GameActions.vue';
 
-import type { Ref } from 'vue'
+import type { Ref } from 'vue';
 
-let lastColor = ''
-let isRotated = ref(false)
+let isRotated = ref(false);
 
-const points: Ref<number> = ref(0)
-const {
-  getDarts,
-  setDarts,
-  getCurrentPlayerId,
-  addMemo,
-  resetMemo,
-  getLatestMemo,
-} = useGame()
+let tooltip: HTMLElement | null = null;
+// get tooltip element
+onMounted(() => {
+	tooltip = document.getElementById('dart-table__tooltip');
+});
 
-const { addPlayerPoints, subtractPlayerPoints } = usePlayers()
+const points: Ref<number> = ref(0);
+const { getDarts, setDarts, getCurrentPlayerId, addMemo, resetMemo, getLatestMemo } = useGame();
 
-const blockTime: number = 1000
-let isBlocked: Ref<boolean> = ref(false)
+const { addPlayerPoints, subtractPlayerPoints } = usePlayers();
+
+const blockTime: number = 1000;
+let isBlocked: Ref<boolean> = ref(false);
 
 const block = () => {
-  isBlocked.value = true
+  isBlocked.value = true;
+
   setTimeout(() => {
-    isBlocked.value = false
-  }, blockTime)
-}
-const addPoints = (e: Event) => {
-  if (isBlocked.value) return
-  if (getDarts.value < 1 || !e.target) return
+    isBlocked.value = false;
+  }, blockTime);
+};
 
-  setDarts(getDarts.value - 1)
-  const target = e.target as HTMLElement
-  const dataValue = target.getAttribute('data-value')
-
-  if (!dataValue) return
-
-  const value = parseInt(dataValue)
-  addMemo(value)
-  points.value += value
-  addPlayerPoints(getCurrentPlayerId.value, value)
-  block()
-}
-
-const changeColor = (e: Event) => {
-  const element = e.target as HTMLElement
-
-  if (element) {
-    lastColor = element.getAttribute('fill') || ''
-    element.setAttribute('fill', 'blue')
+const handleClickEvent = (e: Event) => {
+  if ((e.target as HTMLElement).getAttribute('data-value')) {
+    addPoints(e.target as HTMLElement);
   }
-}
+};
 
-const restoreColor = (e: Event) => {
-  const element = e.target as HTMLElement
+const addPoints = (target: HTMLElement) => {
+  if (isBlocked.value) return;
+  if (getDarts.value < 1 || !target) return;
 
-  if (element) {
-    element.setAttribute('fill', lastColor || '#000000')
+  setDarts(getDarts.value - 1);
+
+  const dataValue = target.getAttribute('data-value');
+
+  if (!dataValue) return;
+
+  const value = parseInt(dataValue);
+  addMemo(value);
+  points.value += value;
+  addPlayerPoints(getCurrentPlayerId.value, value);
+
+  if (getDarts.value < 1) {
+    isBlocked.value = true;
+  } else {
+    block();
   }
-}
+};
 
 const resetPoints = () => {
-  points.value = 0
-  resetMemo()
-}
+  points.value = 0;
+  resetMemo();
+};
 
 const toggleRotateClass = () => {
-  isRotated.value = !isRotated.value
-}
+  isRotated.value = !isRotated.value;
+};
 
 const handlePlayerChange = () => {
-  toggleRotateClass()
-  resetPoints()
-}
+  toggleRotateClass();
+  resetPoints();
+};
 
 const undoShot = () => {
-  if (getDarts.value > 2) return
+  if (getDarts.value > 2) return;
+  isBlocked.value = false;
+  setDarts(getDarts.value + 1);
+  const lastShot = getLatestMemo();
+  subtractPlayerPoints(getCurrentPlayerId.value, lastShot);
+  points.value -= lastShot;
+};
 
-  setDarts(getDarts.value + 1)
-  const lastShot = getLatestMemo()
-  subtractPlayerPoints(getCurrentPlayerId.value, lastShot)
-  points.value -= lastShot
-}
+const handleTouchMoveEvent = (e: TouchEvent) => {
+  e.preventDefault();
+  const target = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) as HTMLElement;
+
+  if (!(target as HTMLElement).getAttribute('data-value')) return;
+	toggleTooltip(`${e.touches[0].clientX - 10}px`, `${e.touches[0].clientY - 50}px`, target.getAttribute('data-value'));
+  if (target.classList.contains('active')) return;
+
+  removeActiveClass();
+
+  target.classList.add('active');
+};
+
+const handleMouseOutEvent = () => {
+  removeActiveClass();
+	toggleTooltip('-50px', '-50px', null);
+};
+
+const toggleTooltip = (x: string, y: string, value: string|null) => {
+	tooltip!.style.top = y;
+	tooltip!.style.left = x;
+	tooltip!.textContent = value;
+};
+
+const handleMouseOverEvent = (e: MouseEvent) => {
+  const target = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
+  if (!(target as HTMLElement).getAttribute('data-value')) return;
+	toggleTooltip(`${e.clientX - 10}px`, `${e.clientY - 50}px`, target.getAttribute('data-value'));
+  if (target.classList.contains('active')) return;
+
+
+  removeActiveClass();
+  target.classList.add('active');
+};
+
+const handleTouchEndEvent = (e: TouchEvent) => {
+	toggleTooltip('-50px', '-50px', null);
+  const target = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY) as HTMLElement;
+  if (!(target as HTMLElement).getAttribute('data-value')) {
+		removeActiveClass();
+	} else {
+		removeActiveClass();
+		addPoints(target);
+	}
+};
+
+const removeActiveClass = () => {
+  const elements = document.querySelectorAll('[data-value]');
+  elements.forEach((element) => {
+    element.classList.remove('active');
+  });
+};
 </script>
 
 <template>
   <div class="dart-table">
+    <div
+      id="dart-table__tooltip"
+      class="dart-table__tooltip"
+    />
     <div class="dart-table__points text-center mb-4 font-weight-medium">
       Round {{ useGame().getCurrentTurn }} points: {{ points }}
     </div>
@@ -99,6 +150,11 @@ const undoShot = () => {
       viewBox="-250 -250 500 500"
       class="dart-table__svg"
       :class="{ 'dart-table__svg--rotated': isRotated }"
+      @click="handleClickEvent"
+      @mouseout="handleMouseOutEvent"
+      @touchend="handleTouchEndEvent"
+      @touchmove="handleTouchMoveEvent"
+      @mousemove="handleMouseOverEvent"
     >
       <defs id="defs6">
         <line
@@ -169,9 +225,6 @@ const undoShot = () => {
             y="0"
             x="0"
             fill="red"
-            @click="addPoints"
-            @mouseover="changeColor"
-            @mouseout="restoreColor"
             :class="{ pointer: !isBlocked }"
             data-value="40"
           />
@@ -184,9 +237,6 @@ const undoShot = () => {
             y="0"
             x="0"
             fill="#000000"
-            @click="addPoints"
-            @mouseover="changeColor"
-            @mouseout="restoreColor"
             :class="{ pointer: !isBlocked }"
             data-value="20"
           />
@@ -203,9 +253,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="60"
             />
@@ -217,9 +264,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="20"
             />
@@ -236,9 +280,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="10"
             />
@@ -250,9 +291,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="5"
             />
@@ -264,9 +302,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="15"
             />
@@ -278,9 +313,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="5"
             />
@@ -297,9 +329,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="24"
             />
@@ -311,9 +340,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="12"
             />
@@ -325,9 +351,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="36"
             />
@@ -339,9 +362,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="12"
             />
@@ -358,9 +378,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="18"
             />
@@ -372,9 +389,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="9"
             />
@@ -386,9 +400,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="27"
             />
@@ -400,9 +411,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="9"
             />
@@ -419,9 +427,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="28"
             />
@@ -433,9 +438,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="14"
             />
@@ -447,9 +449,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="42"
             />
@@ -461,9 +460,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="14"
             />
@@ -480,9 +476,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="22"
             />
@@ -494,9 +487,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="11"
             />
@@ -508,9 +498,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="33"
             />
@@ -522,9 +509,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="11"
             />
@@ -541,9 +525,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="16"
             />
@@ -555,9 +536,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="8"
             />
@@ -569,9 +547,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="24"
             />
@@ -583,9 +558,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="8"
             />
@@ -602,9 +574,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="32"
             />
@@ -616,9 +585,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="16"
             />
@@ -630,9 +596,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="48"
             />
@@ -644,9 +607,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="16"
             />
@@ -663,9 +623,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="14"
             />
@@ -677,9 +634,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="7"
             />
@@ -691,9 +645,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="21"
             />
@@ -705,9 +656,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="7"
             />
@@ -724,9 +672,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="38"
             />
@@ -738,9 +683,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="19"
             />
@@ -752,9 +694,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="57"
             />
@@ -766,9 +705,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="19"
             />
@@ -785,9 +721,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="6"
             />
@@ -799,9 +732,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="3"
             />
@@ -813,9 +743,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="9"
             />
@@ -827,9 +754,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="3"
             />
@@ -846,9 +770,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="34"
             />
@@ -860,9 +781,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="17"
             />
@@ -874,9 +792,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="51"
             />
@@ -888,9 +803,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="17"
             />
@@ -907,9 +819,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="4"
             />
@@ -921,9 +830,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="2"
             />
@@ -935,9 +841,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="6"
             />
@@ -949,9 +852,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="2"
             />
@@ -968,9 +868,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="30"
             />
@@ -982,9 +879,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="15"
             />
@@ -996,9 +890,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="45"
             />
@@ -1010,9 +901,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="15"
             />
@@ -1029,9 +917,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="20"
             />
@@ -1043,9 +928,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="10"
             />
@@ -1057,9 +939,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="30"
             />
@@ -1071,9 +950,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="10"
             />
@@ -1090,9 +966,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="18"
             />
@@ -1104,9 +977,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="6"
             />
@@ -1118,9 +988,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="27"
             />
@@ -1132,9 +999,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="6"
             />
@@ -1151,9 +1015,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="26"
             />
@@ -1165,9 +1026,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="13"
             />
@@ -1179,9 +1037,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="39"
             />
@@ -1193,9 +1048,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="13"
             />
@@ -1212,9 +1064,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="8"
             />
@@ -1226,9 +1075,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="4"
             />
@@ -1240,9 +1086,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="12"
             />
@@ -1254,9 +1097,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="4"
             />
@@ -1273,9 +1113,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="36"
             />
@@ -1287,9 +1124,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="18"
             />
@@ -1301,9 +1135,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ff0000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="54"
             />
@@ -1315,9 +1146,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#000000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="18"
             />
@@ -1334,9 +1162,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="2"
             />
@@ -1348,9 +1173,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="1"
             />
@@ -1362,9 +1184,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#008000"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="3"
             />
@@ -1376,9 +1195,6 @@ const undoShot = () => {
               y="0"
               x="0"
               fill="#ffffff"
-              @click="addPoints"
-              @mouseover="changeColor"
-              @mouseout="restoreColor"
               :class="{ pointer: !isBlocked }"
               data-value="1"
             />
@@ -1390,9 +1206,6 @@ const undoShot = () => {
             cx="0"
             r="16.4"
             fill="#008000"
-            @click="addPoints"
-            @mouseover="changeColor"
-            @mouseout="restoreColor"
             :class="{ pointer: !isBlocked }"
             data-value="25"
           />
@@ -1403,9 +1216,6 @@ const undoShot = () => {
             cx="0"
             r="6.85"
             fill="#f00"
-            @click="addPoints"
-            @mouseover="changeColor"
-            @mouseout="restoreColor"
             :class="{ pointer: !isBlocked }"
             data-value="50"
           />
@@ -1751,10 +1561,23 @@ const undoShot = () => {
 
 	.pointer
 		cursor: pointer
+	.active
+		fill: blue
 
 	&__svg
 		transition: transform 1s
 		&--rotated
 			transform: rotate(360deg)
-    
+
+	&__tooltip
+		top: -50px
+		left: -50px
+		position: absolute
+		background: rgba(0, 0, 0, 0.8)
+		color: white
+		padding: 0.5rem
+		border-radius: 0.5rem
+		font-size: 1.2rem
+		transform: translate(-50%, -50%)
+		z-index: 100
 </style>
