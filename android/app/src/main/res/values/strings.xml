@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Darts Counter</string>
+    <string name="title_activity_main">Darts Counter</string>
+    <string name="package_name">pl.webkor.darts.app</string>
+    <string name="custom_url_scheme">pl.webkor.darts.app</string>
+</resources>
