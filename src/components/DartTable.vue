@@ -85,8 +85,8 @@ const undoShot = () => {
 const handleTouchMoveEvent = (e: TouchEvent) => {
   e.preventDefault();
   const target = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY) as HTMLElement;
-	console.log('target', target);
-  if (!(target as HTMLElement).getAttribute('data-value')) return;
+
+	if (!(target as HTMLElement).getAttribute('data-value')) return;
 	toggleTooltip(`${e.touches[0].clientX - 10}px`, `${e.touches[0].clientY - 75}px`, target.getAttribute('data-value'));
   if (target.classList.contains('active')) return;
 
