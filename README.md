@@ -15,6 +15,7 @@
   <a href="#rocket-technologie">Technologies</a> &#xa0; | &#xa0;
   <a href="#iphone-mobile">Mobile</a> &#xa0; | &#xa0;
   <a href="#white_check_mark-requirements">Requirements</a> &#xa0; | &#xa0;
+  <a href="#camera-screenshots">Screenshots</a> &#xa0; | &#xa0;
 </p>
 
 <br>
@@ -107,6 +108,14 @@ For Android
 - Installed Android Studio
 - Set JAVA_HOME global variable to: `C:\Program Files\Android\Android Studio\jbr`
 - Set Path global variable to: `%JAVA_HOME%\bin`
+
+## :camera: Screenshots
+
+<img src="./screenshots/phone/Screenshot_20240405_150041_pl.webkor.darts.app.jpg" alt="" width="150" style="float: left" />
+
+<img src="./screenshots/phone/Screenshot_20240405_150136_pl.webkor.darts.app.jpg" alt="" width="150" style="float: left; margin-left: 10px" />
+
+<img src="./screenshots/phone/Screenshot_20240405_150144_pl.webkor.darts.app.jpg" alt="" width="150" style=" margin-left: 10px" />
 
 <br><br>
 Made with :heart: by Webkor Adrian Korzan
