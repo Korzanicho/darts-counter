@@ -968,7 +968,7 @@ const removeActiveClass = () => {
               x="0"
               fill="#008000"
               :class="{ pointer: !isBlocked }"
-              data-value="18"
+              data-value="12"
             />
             <use
               id="use173"
@@ -990,7 +990,7 @@ const removeActiveClass = () => {
               x="0"
               fill="#008000"
               :class="{ pointer: !isBlocked }"
-              data-value="27"
+              data-value="18"
             />
             <use
               id="use177"
