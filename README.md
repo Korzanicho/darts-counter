@@ -31,14 +31,14 @@ Counting points in darts couldn't be easier. Add players and mark their points o
 
 
 ## :house_with_garden: Platforms
-| Platform | Available |
-|----------|-------|
-| WEB | :white_check_mark: [Link](https://darts.webkor.pl/) |
-| PWA | :white_check_mark: [Link](https://darts.webkor.pl/) |
-| Google Play | :white_check_mark: [Link](https://play.google.com/store/apps/details?id=pl.webkor.darts.app&hl=pl&gl=US&pli=1)|
-| Apple strore | :x: |
-| Windows | :x: |
-| Linux | :x: |
+| Platform | Available                                                                                                      |
+|----------|----------------------------------------------------------------------------------------------------------------|
+| WEB | :white_check_mark: [Link](https://darts.webkor.ovh/)                                                             |
+| PWA | :white_check_mark: [Link](https://darts.webkor.pl/)                                                            |
+| Google Play | :white_check_mark: [Link](https://play.google.com/store/apps/details?id=pl.webkor.darts.app&hl=pl&gl=US&pli=1) |
+| Apple strore | :x:                                                                                                            |
+| Windows | :x:                                                                                                            |
+| Linux | :x:                                                                                                            |
 
 ## :rocket: Technologies
 
@@ -71,14 +71,7 @@ $ npx cap add android
 $ npx cap add ios
 ```
 
-4. Install the native platforms you want to target
-```bash
-$ npm i @capacitor/ios @capacitor/android
-$ npx cap add android
-$ npx cap add ios
-```
-
-5. You can test your app on virtual device
+4. You can test your app on virtual device
 ```bash
 $ npx cap run android
 ```
@@ -89,7 +82,7 @@ $ npx cap open android
 ```
 [More info](https://capacitorjs.com/docs/android)
 
-5. Build your apk file in Android Studio project. 
+6. Build your apk file in Android Studio project. 
 
 Build -> build Bundle(s) / APK(s) -> Build APK(s) (for tests)
 Build -> Generate signed bundle / APK -> Build APK(s) (for production apk)
