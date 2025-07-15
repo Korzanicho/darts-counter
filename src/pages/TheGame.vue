@@ -6,6 +6,9 @@ import DartTable from '@/components/DartTable.vue';
 import PlayerList from '@/components/PlayerList.vue';
 import NewPlayerForm from '@/components/NewPlayerForm.vue';
 import TheLeaderboard from '@/components/TheLeaderboard.vue';
+import AButton from '@/atoms/AButton.vue';
+import AText from '@/atoms/AText.vue';
+import AAnchor from '@/atoms/AAnchor.vue';
 
 import { useGame } from '@/composables/useGame';
 import { usePlayers } from '@/composables/usePlayers';
@@ -59,20 +62,18 @@ onMounted(() => {
 	>
 		<NewPlayerForm />
 		<PlayerList />
-		<v-btn
+		<AButton
 			class="mx-auto d-block"
-			color="primary"
-			size="x-large"
-			:disabled="getPlayers.length < 1"
+			:isDisabled="getPlayers.length < 1"
 			@click="startGame"
 		>
 			START
-		</v-btn>
+		</AButton>
 
 		<div class="terms">
-			&copy; 2024 Darts Counter |
-			<a href="/privacy-policy.html">Privacy Policy</a> |
-			<a href="/terms-and-conditions.html">Terms & Conditions</a>
+			<AText tag="span">&copy; 2024 Darts Counter</AText> |
+			<AAnchor href="/privacy-policy.html">Privacy Policy</AAnchor> |
+			<AAnchor href="/terms-and-conditions.html">Terms & Conditions</AAnchor>
 		</div>
 	</div>
 
@@ -157,12 +158,6 @@ onMounted(() => {
 		position: absolute
 		text-align: center
 		padding: 0.8rem
-		a
-			color: var(--primary)
-			margin: 0 0.5rem
-			text-decoration: none
-			&:hover
-				text-decoration: underline
 
 .game
 	position: relative
