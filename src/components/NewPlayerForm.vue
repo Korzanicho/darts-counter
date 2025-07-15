@@ -1,7 +1,7 @@
 <template>
   <v-container class="new-player-form">
-    <img
-      src="../assets/Darts-Counter-Logo.png"
+    <AImage
+      :src="DartsCounterLogo"
       alt="Darts Counter"
       class="new-player-form__logo"
     />
@@ -18,14 +18,11 @@
           />
         </v-col>
         <v-col cols="4">
-          <v-btn
-            class="mx-auto"
+          <AButton
             type="submit"
-            color="primary"
-            height="55px"
           >
             Add
-          </v-btn>
+          </AButton>
         </v-col>
       </v-row>
     </v-form>
@@ -36,8 +33,13 @@
 import { ref } from 'vue';
 import { usePlayers } from '@/composables/usePlayers';
 
+import DartsCounterLogo from '@/assets/Darts-Counter-Logo.png';
+
 import type { Player } from '@/interfaces';
 import type { Ref } from 'vue';
+
+import AButton from '@/atoms/AButton.vue';
+import AImage from '@/atoms/AImage.vue';
 
 const { addPlayer, getPlayers } = usePlayers();
 

@@ -6,7 +6,7 @@
         :key="index"
         cols="12"
       >
-        <div class="player-list__wrapper pa-5 rounded-lg">
+        <div class="player-list__wrapper pa-5 mb-0 rounded-lg">
           <h2
             class="player-list__name"
             :style="{ '--color-player': player.color }"
